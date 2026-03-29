@@ -64,8 +64,9 @@ Follow these instructions to get a copy of the project up and running on your lo
    ```
 
 3. **Configure Firebase**
-   - Use the [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) to reconfigure the project to your own Firebase backend.
-   - Run `flutterfire configure` inside the project directory.
+    - **Note:** For security reasons, `lib/firebase_options.dart` and `android/app/google-services.json` are excluded from the repository.
+    - Use the [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) to reconfigure the project to your own Firebase backend.
+    - Run `flutterfire configure` inside the project directory to generate your own configuration files.
 
 4. **Run the app**
    ```bash
