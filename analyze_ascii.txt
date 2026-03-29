@@ -1,0 +1,71 @@
+Analyzing smart_task_manager...                                 
+
+warning - This default clause is covered by the previous cases - lib\screens\home_screen.dart:212:25 - unreachable_switch_default
+warning - This default clause is covered by the previous cases - lib\screens\home_screen.dart:316:9 - unreachable_switch_default
+  error - Expected to find ';' - lib\screens\home_screen.dart:371:8 - expected_token
+  error - Expected to find ')' - lib\screens\home_screen.dart:372:3 - expected_token
+warning - The value of the local variable 'dateStr' isn't used - lib\screens\home_screen.dart:430:11 - unused_local_variable
+warning - The value of the local variable 'isOverdue' isn't used - lib\screens\home_screen.dart:431:11 - unused_local_variable
+warning - The value of the local variable 'priorityColor' isn't used - lib\screens\home_screen.dart:434:11 - unused_local_variable
+  error - The named parameter 'child' is required, but there's no corresponding argument - lib\screens\home_screen.dart:445:16 - missing_required_argument
+  error - Undefined name 'HapticFeedback' - lib\screens\home_screen.dart:468:13 - undefined_identifier
+  error - 'catch' can't be used as an identifier because it's a keyword - lib\screens\home_screen.dart:493:15 - expected_identifier_but_got_keyword
+  error - The method 'catch' isn't defined for the type '_TaskCardState' - lib\screens\home_screen.dart:493:15 - undefined_method
+  error - Undefined name 'e' - lib\screens\home_screen.dart:493:22 - undefined_identifier
+  error - Expected to find ';' - lib\screens\home_screen.dart:493:23 - expected_token
+  error - Undefined name 'e' - lib\screens\home_screen.dart:496:51 - undefined_identifier
+  error - Expected to find ';' - lib\screens\home_screen.dart:500:11 - expected_token
+warning - Dead code - lib\screens\home_screen.dart:500:13 - dead_code
+  error - Expected an identifier - lib\screens\home_screen.dart:500:13 - missing_identifier
+  error - Expected to find ')' - lib\screens\home_screen.dart:500:13 - expected_token
+  error - Unexpected text ';' - lib\screens\home_screen.dart:500:13 - unexpected_token
+  error - The await expression can only be used in an async function - lib\screens\home_screen.dart:504:15 - await_in_wrong_context
+  error - Expected a class member - lib\screens\home_screen.dart:534:10 - expected_class_member
+   info - An uninitialized field should have an explicit type annotation - lib\screens\home_screen.dart:535:9 - prefer_typing_uninitialized_variables
+  error - Expected to find ';' - lib\screens\home_screen.dart:535:9 - expected_token
+  error - Variables must be declared using the keywords 'const', 'final', 'var' or a type name - lib\screens\home_screen.dart:535:9 - missing_const_final_var_or_type
+  error - Expected a class member - lib\screens\home_screen.dart:535:14 - expected_class_member
+   info - The variable name 'Opacity' isn't a lowerCamelCase identifier - lib\screens\home_screen.dart:535:16 - non_constant_identifier_names
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - lib\screens\home_screen.dart:536:18 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - lib\screens\home_screen.dart:536:18 - obsolete_colon_for_default_value
+  error - The default value of an optional parameter must be constant - lib\screens\home_screen.dart:536:20 - non_constant_default_value
+  error - Undefined name 'task' - lib\screens\home_screen.dart:536:20 - undefined_identifier
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - lib\screens\home_screen.dart:537:16 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - lib\screens\home_screen.dart:537:16 - obsolete_colon_for_default_value
+  error - The default value of an optional parameter must be constant - lib\screens\home_screen.dart:537:18 - non_constant_default_value
+  error - Undefined name 'priorityColor' - lib\screens\home_screen.dart:550:26 - undefined_identifier
+  error - Undefined name 'taskService' - lib\screens\home_screen.dart:554:56 - undefined_identifier
+  error - Undefined name 'task' - lib\screens\home_screen.dart:554:70 - undefined_identifier
+  error - Undefined name 'task' - lib\screens\home_screen.dart:568:44 - undefined_identifier
+  error - Undefined name 'theme' - lib\screens\home_screen.dart:571:52 - undefined_identifier
+  error - Undefined name 'theme' - lib\screens\home_screen.dart:574:52 - undefined_identifier
+  error - Undefined name 'task' - lib\screens\home_screen.dart:580:37 - undefined_identifier
+  error - Undefined name 'task' - lib\screens\home_screen.dart:583:51 - undefined_identifier
+  error - Undefined name 'theme' - lib\screens\home_screen.dart:586:46 - undefined_identifier
+  error - Undefined name 'task' - lib\screens\home_screen.dart:593:33 - undefined_identifier
+  error - Undefined name 'task' - lib\screens\home_screen.dart:598:35 - undefined_identifier
+  error - Undefined name 'theme' - lib\screens\home_screen.dart:603:44 - undefined_identifier
+  error - Undefined name 'isOverdue' - lib\screens\home_screen.dart:617:42 - undefined_identifier
+  error - Undefined name 'theme' - lib\screens\home_screen.dart:619:41 - undefined_identifier
+  error - Undefined name 'isOverdue' - lib\screens\home_screen.dart:626:39 - undefined_identifier
+  error - Undefined name 'isOverdue' - lib\screens\home_screen.dart:630:46 - undefined_identifier
+  error - Undefined name 'theme' - lib\screens\home_screen.dart:632:45 - undefined_identifier
+  error - Undefined name 'dateStr' - lib\screens\home_screen.dart:636:39 - undefined_identifier
+  error - Undefined name 'isOverdue' - lib\screens\home_screen.dart:639:48 - undefined_identifier
+  error - Undefined name 'theme' - lib\screens\home_screen.dart:641:47 - undefined_identifier
+  error - Undefined name 'isOverdue' - lib\screens\home_screen.dart:642:53 - undefined_identifier
+  error - Undefined name 'userId' - lib\screens\home_screen.dart:661:51 - undefined_identifier
+  error - Undefined name 'task' - lib\screens\home_screen.dart:662:49 - undefined_identifier
+  error - Undefined name 'theme' - lib\screens\home_screen.dart:669:44 - undefined_identifier
+  error - Undefined name 'priorityColor' - lib\screens\home_screen.dart:677:48 - undefined_identifier
+  error - Undefined name 'task' - lib\screens\home_screen.dart:683:39 - undefined_identifier
+  error - Undefined name 'priorityColor' - lib\screens\home_screen.dart:687:48 - undefined_identifier
+  error - A function body must be provided - lib\screens\home_screen.dart:704:10 - missing_function_body
+  error - Expected a class member - lib\screens\home_screen.dart:704:10 - expected_class_member
+  error - Expected a class member - lib\screens\home_screen.dart:705:7 - expected_class_member
+  error - Expected a class member - lib\screens\home_screen.dart:705:8 - expected_class_member
+  error - Expected a class member - lib\screens\home_screen.dart:706:5 - expected_class_member
+  error - Expected a class member - lib\screens\home_screen.dart:706:6 - expected_class_member
+  error - Expected a method, getter, setter or operator declaration - lib\screens\home_screen.dart:708:1 - expected_executable
+  error - The getter 'backOut' isn't defined for the type 'Curves' - lib\splash_screen.dart:27:62 - undefined_getter
+
