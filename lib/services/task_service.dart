@@ -70,4 +70,27 @@ class TaskService {
 
     await docRef.delete();
   }
+
+  Future<void> updateTask({
+    required String taskId,
+    required String userId,
+    required String title,
+    required String description,
+    required DateTime dueDate,
+    required TaskPriority priority,
+  }) async {
+    final docRef = _tasksRef.doc(taskId);
+    final doc = await docRef.get();
+
+    if (!doc.exists || doc.data()?['userId'] != userId) {
+      throw StateError('You are not allowed to update this task.');
+    }
+
+    await docRef.update({
+      'title': title.trim(),
+      'description': description.trim(),
+      'dueDate': Timestamp.fromDate(dueDate),
+      'priority': priority.value,
+    });
+  }
 }

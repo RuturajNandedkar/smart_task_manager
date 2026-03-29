@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +9,16 @@ import 'providers/theme_provider.dart';
 import 'services/auth_service.dart';
 import 'services/task_service.dart';
 import 'splash_screen.dart';
+import 'widgets/connectivity_banner.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  FirebaseFirestore.instance.settings = const Settings(
+    persistenceEnabled: true,
+    cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+  );
 
   // Load theme preference before running app
   final themeProvider = await ThemeProvider.load();
@@ -42,6 +49,7 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'Smart Task Manager',
             debugShowCheckedModeBanner: false,
+            builder: (context, child) => ConnectivityBanner(child: child!),
             themeMode: theme.themeMode,
             theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(

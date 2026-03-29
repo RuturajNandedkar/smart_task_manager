@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:provider/provider.dart';
 import '../models/task.dart';
 import '../services/task_service.dart';
@@ -11,9 +12,32 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
+class _DashboardScreenState extends State<DashboardScreen>
+    with SingleTickerProviderStateMixin {
   Stream<List<Task>>? _tasksStream;
   String? _lastUserId;
+
+  late AnimationController _animController;
+  late List<Animation<double>> _staggeredAnims;
+
+  @override
+  void initState() {
+    super.initState();
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+
+    _staggeredAnims = List.generate(4, (i) {
+      final start = i * 0.1;
+      return CurvedAnimation(
+        parent: _animController,
+        curve: Interval(start, (start + 0.5).clamp(0.0, 1.0), curve: Curves.easeOut),
+      );
+    });
+
+    _animController.forward();
+  }
 
   @override
   void didChangeDependencies() {
@@ -29,20 +53,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   @override
+  void dispose() {
+    _animController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (_tasksStream == null) {
-      return const Center(child: CircularProgressIndicator());
+      return Scaffold(
+        appBar: AppBar(title: const Text('Statistics')),
+        body: _buildShimmerLoading(),
+      );
     }
+
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        title: const Text('Statistics'),
+        elevation: 0,
       ),
       body: StreamBuilder<List<Task>>(
         stream: _tasksStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return _buildShimmerLoading();
           }
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
@@ -52,42 +88,71 @@ class _DashboardScreenState extends State<DashboardScreen> {
           final totalTasks = tasks.length;
           final completedTasks = tasks.where((t) => t.isCompleted).length;
           final pendingTasks = totalTasks - completedTasks;
-
           final highPriority = tasks.where((t) => !t.isCompleted && t.priority == TaskPriority.high).length;
+
           final mediumPriority = tasks.where((t) => !t.isCompleted && t.priority == TaskPriority.medium).length;
           final lowPriority = tasks.where((t) => !t.isCompleted && t.priority == TaskPriority.low).length;
 
-          double completionRate = totalTasks == 0 ? 0 : completedTasks / totalTasks;
-
           return ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             children: [
-              _buildStatCard(
-                context,
-                title: 'Completion Rate',
-                value: '${(completionRate * 100).toStringAsFixed(1)}%',
-                icon: Icons.pie_chart_rounded,
-                color: Theme.of(context).colorScheme.primary,
+              // 2x2 Grid of Stat Cards
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildStatCard(
+                      title: 'Total Tasks',
+                      value: '$totalTasks',
+                      icon: Icons.assignment_rounded,
+                      gradient: const [Color(0xFF6C63FF), Color(0xFF3B37CC)],
+                      animation: _staggeredAnims[0],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _buildStatCard(
+                      title: 'Completed',
+                      value: '$completedTasks',
+                      icon: Icons.task_alt_rounded,
+                      gradient: const [Color(0xFF11998E), Color(0xFF38EF7D)],
+                      animation: _staggeredAnims[1],
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
               Row(
                 children: [
                   Expanded(
-                    child: _buildStatCard(context, title: 'Pending', value: '$pendingTasks', icon: Icons.pending_actions_rounded, color: Colors.orange),
+                    child: _buildStatCard(
+                      title: 'Pending',
+                      value: '$pendingTasks',
+                      icon: Icons.pending_actions_rounded,
+                      gradient: const [Color(0xFFFF6B6B), Color(0xFFFF8E53)],
+                      animation: _staggeredAnims[2],
+                    ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: _buildStatCard(context, title: 'Completed', value: '$completedTasks', icon: Icons.task_alt_rounded, color: Colors.green),
+                    child: _buildStatCard(
+                      title: 'High Priority',
+                      value: '$highPriority',
+                      icon: Icons.priority_high_rounded,
+                      gradient: const [Color(0xFFFC466B), Color(0xFF3F5EFB)],
+                      animation: _staggeredAnims[3],
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
-              Text('Pending by Priority', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+
+              const SizedBox(height: 32),
+              Text(
+                'Other Priorities',
+                style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 16),
-              _buildPriorityRow(context, 'High', highPriority, TaskPriority.high.color),
-              const SizedBox(height: 8),
               _buildPriorityRow(context, 'Medium', mediumPriority, TaskPriority.medium.color),
-              const SizedBox(height: 8),
+              const Divider(height: 24),
               _buildPriorityRow(context, 'Low', lowPriority, TaskPriority.low.color),
             ],
           );
@@ -96,42 +161,128 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildStatCard(BuildContext context, {required String title, required String value, required IconData icon, required Color color}) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildStatCard({
+    required String title,
+    required String value,
+    required IconData icon,
+    required List<Color> gradient,
+    required Animation<double> animation,
+  }) {
+    return FadeTransition(
+      opacity: animation,
+      child: SlideTransition(
+        position: Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero).animate(animation),
+        child: Container(
+          height: 160,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: gradient,
+            ),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: gradient.first.withAlpha(80),
+                blurRadius: 12,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, color: Colors.white, size: 28),
+              const Spacer(),
+              Text(
+                value,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                title.toUpperCase(),
+                style: TextStyle(
+                  color: Colors.white.withAlpha(216), // ~0.85 opacity
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerLoading() {
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        Row(
           children: [
-            Icon(icon, color: color, size: 32),
-            const SizedBox(height: 16),
-            Text(value, style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold, color: color)),
-            const SizedBox(height: 4),
-            Text(title, style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.w600)),
+            Expanded(child: _buildShimmerBox()),
+            const SizedBox(width: 16),
+            Expanded(child: _buildShimmerBox()),
           ],
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(child: _buildShimmerBox()),
+            const SizedBox(width: 16),
+            Expanded(child: _buildShimmerBox()),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildShimmerBox() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Container(
+        height: 160,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
         ),
       ),
     );
   }
 
   Widget _buildPriorityRow(BuildContext context, String label, int count, Color color) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Container(
-              width: 12, height: 12,
-              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-            ),
-            const SizedBox(width: 8),
-            Text(label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
-          ],
-        ),
-        Text('$count', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 12,
+                height: 12,
+                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                label,
+                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+              ),
+            ],
+          ),
+          Text(
+            '$count',
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+        ],
+      ),
     );
   }
 }
